@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  api-template:
+    container_name: template-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: "10"
+    restart: unless-stopped
+    ports:
+      - 3000:5000
+    volumes:
+      - ./code:/app
+    environment:
+      # mandatory
+      API_KEY: "Stefanini@10"
+      API_NAME: Template dev
+      API_PORT: 3000
+      DATABASE_URL: "postgresql://postgres:postgres@host.docker.internal:5432/template?schema=public"
+      # optional
+      GRAPHQL_DEBUG: "true"
+      GRAPHQL_INTROSPECTION: "true"
+      GRAPHQL_PLAYGROUND: "true"
+      LOGGER: "debug,error,log,verbose,warn"
+      NODE_ENV: "development"
+      # additional mandatory
+      API_DIGICOMMERCE_HOST: "https://vinni.com.br"
+      API_DIGICOMMERCE_SECRET: "DIGICOMMERCE@10"
+      JWT_TOKEN_EXPIRE_IN_SEC: 86400 # 24 horas

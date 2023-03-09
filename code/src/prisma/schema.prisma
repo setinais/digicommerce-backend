@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+  name      String    @unique @db.VarChar(255)
+  users     User[]
+
+  @@map("profiles")
+}
+
+model User {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+  name      String    @db.VarChar(80)
+  email     String    @unique @db.VarChar(80)
+  password  String    @db.VarChar(80)
+  status    Boolean   @default(true)
+  profileId Int?      @map("profile_id")
+  profiles  Profile?  @relation(fields: [profileId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+
+  @@map("users")
+}
