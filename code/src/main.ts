@@ -26,7 +26,7 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api-pricer', app, document);
   }
-  await app.listen();
+  await app.listen(API_PORT);
   console.log(`${textSync(API_NAME, 'Standard')}`);
   Logger.verbose(`Running in port: ${API_PORT}  🚀`, 'Bootstrap');
 }
