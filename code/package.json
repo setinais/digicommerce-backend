@@ -13,7 +13,7 @@
     "migrate:dev": "yarn prisma migrate dev --name",
     "prebuild": "rimraf dist",
     "prestart:dev": "yarn install && prisma generate && prisma migrate deploy",
-    "prestart:prod": "nest build",
+    "prestart:prod": "nest build && prisma migrate deploy",
     "prisma:migrate": "./node_modules/prisma/build/index.js migrate deploy",
     "prisma": "./node_modules/prisma/build/index.js",
     "start:debug": "nest start --debug --watch",
