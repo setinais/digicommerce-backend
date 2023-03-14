@@ -18,7 +18,7 @@ export class AuthController extends ExceptionsHandler {
   @Post('/login')
   @ApiBody({ type: LoginInput })
   @ApiResponse({ status: 200, type: LoginOutput })
-  async login(@Request() req: any): Promise<LoginOutput> {
+  async login(@Request() req: any): Promise<LoginOutput | undefined> {
     try {
       return await this.authService.login(req.user);
     } catch (error) {
@@ -30,7 +30,7 @@ export class AuthController extends ExceptionsHandler {
   @Get('/logout')
   @ApiBearerAuth()
   @ApiResponse({ status: 200 })
-  async logout(@Request() req: any): Promise<boolean> {
+  async logout(@Request() req: any): Promise<boolean | undefined> {
     try {
       return await this.authService.logout(req.user);
     } catch (error) {

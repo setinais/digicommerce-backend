@@ -11,14 +11,24 @@ import { User } from '../users/entities/user.entity';
 
 @Resolver()
 export class AuthResolver extends ExceptionsHandler {
-  constructor(private readonly authService: AuthService, private readonly localStrategy: LocalStrategy) {
+  constructor(
+    private readonly authService: AuthService,
+    private readonly localStrategy: LocalStrategy,
+  ) {
     super();
   }
 
   @Mutation(() => LoginOutput)
-  async login(@Args('loginInput') loginInput: LoginInput): Promise<LoginOutput> {
+  async login(
+    @Args('loginInput') loginInput: LoginInput,
+  ): Promise<LoginOutput | undefined> {
     try {
-      return await this.authService.login(await this.localStrategy.validate(loginInput.idKey, loginInput.secretKey));
+      return await this.authService.login(
+        await this.localStrategy.validate(
+          loginInput.idKey,
+          loginInput.secretKey,
+        ),
+      );
     } catch (error) {
       this.handleError(error);
     }
@@ -26,7 +36,7 @@ export class AuthResolver extends ExceptionsHandler {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => Boolean)
-  async logout(@CurrentToken() user: User): Promise<boolean> {
+  async logout(@CurrentToken() user: User): Promise<boolean | undefined> {
     try {
       await this.authService.logout(user);
       return true;
