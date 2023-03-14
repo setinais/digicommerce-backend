@@ -1,12 +1,8 @@
 import { Injectable, Module } from '@nestjs/common';
 import { PrismaService } from '../../services/prisma/prisma.service';
-import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { Prisma } from '@prisma/client';
 
-@Module({
-  imports: [PrismaService],
-})
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
@@ -26,14 +22,7 @@ export class UsersService {
         email: true,
         name: true,
         password: false,
-        profileId: true,
         createdAt: true,
-        profiles: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
       },
     });
   }
@@ -41,16 +30,8 @@ export class UsersService {
   /// This action returns a user
   async findOne(id: string) {
     return await this.prisma.user.findFirst({
-      include: {
-        profiles: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
       where: {
-        id: id,
+        id,
       },
     });
   }

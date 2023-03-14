@@ -16,17 +16,17 @@ async function bootstrap() {
   await prismaService.enableShutdownHooks(app);
   app.useGlobalPipes(new ValidationPipe());
   app.enableShutdownHooks();
-  if (SWAGGER_ENABLED) {
-    const config = new DocumentBuilder()
-      .setTitle('API Template')
-      .setDescription('Template base.')
-      .setVersion('0.0.1')
-      .addTag('Template')
-      .build();
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api-pricer', app, document);
-  }
-  await app.listen(API_PORT);
+  // if (SWAGGER_ENABLED) {
+  //   const config = new DocumentBuilder()
+  //     .setTitle('API Template')
+  //     .setDescription('Template base.')
+  //     .setVersion('0.0.1')
+  //     .addTag('Template')
+  //     .build();
+  //   const document = SwaggerModule.createDocument(app, config);
+  //   SwaggerModule.setup('api-pricer', app, document);
+  // }
+  // await app.listen(API_PORT);
   console.log(`${textSync(API_NAME, 'Standard')}`);
   Logger.verbose(`Running in port: ${API_PORT}  🚀`, 'Bootstrap');
 }

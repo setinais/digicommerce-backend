@@ -7,6 +7,4 @@ export class CreateUserInput implements Prisma.UserCreateInput {
   @Field(() => String) name: string;
   @Field(() => String) email: string;
   @Field(() => String) password: string;
-  @Field(() => Int, { defaultValue: 2 }) profileId: number;
-  profiles?: Prisma.ProfileCreateNestedOneWithoutUsersInput;
 }

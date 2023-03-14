@@ -7,26 +7,78 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Profile {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
-  name      String    @unique @db.VarChar(255)
-  users     User[]
-
-  @@map("profiles")
+enum ROLE {
+  ADMIN
+  API
+  MANAGER
+  STORAGE
+  CLIENT
+  SELLER
 }
 
 model User {
   id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime? @default(now()) @map("created_at")
   updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
-  name      String    @db.VarChar(80)
-  email     String    @unique @db.VarChar(80)
-  password  String    @db.VarChar(80)
-  status    Boolean   @default(true)
-  profileId Int?      @map("profile_id")
-  profiles  Profile?  @relation(fields: [profileId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+
+  name     String  @db.VarChar(80)
+  email    String  @unique @db.VarChar(80)
+  password String  @db.VarChar(80)
+  active   Boolean @default(true)
+  role     ROLE    @default(CLIENT)
+  document String? @db.VarChar(14)
+
+  corporate_name String? @map("corporate_name")
+  fatansyName    String? @map("fatansy_name")
+
+  confirmEmail  String? @map("confirm_email")
+  resetPassword String? @map("reset_password")
+
+  Address Address?
 
   @@map("users")
+}
+
+model Address {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+
+  cep          String
+  number       Int
+  complement   String
+  address      String
+  neighborhood String
+  cityId       Int    @map("city_id")
+  userId       String @unique @map("user_id") @db.Uuid
+
+  City City @relation(fields: [cityId], references: [id], onDelete: NoAction)
+  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model State {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+
+  name String
+  uf   String @db.VarChar(2)
+
+  City City[]
+
+  @@map("states")
+}
+
+model City {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+
+  name    String
+  stateId Int    @map("state_id")
+
+  State   State     @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  Address Address[]
+
+  @@map("cities")
 }
