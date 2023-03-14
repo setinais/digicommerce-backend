@@ -1,8 +1,8 @@
 version: "3.9"
 
 services:
-  api-template:
-    container_name: api-template
+  api-enroll:
+    container_name: api-enroll
     build:
       context: .
       dockerfile: Dockerfile
@@ -18,7 +18,7 @@ services:
       - 3000:80
     environment:
       # mandatory
-      API_NAME: Template
+      API_NAME: ENROLL
       API_PORT: 80
       DATABASE_URL: "postgresql://postgres:postgres@host.docker.internal:5432/template?schema=public"
       # optional

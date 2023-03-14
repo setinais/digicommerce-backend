@@ -1,8 +1,8 @@
 version: "3.9"
 
 services:
-  api-template:
-    container_name: template-dev
+  api-enroll:
+    container_name: enroll-dev
     build:
       context: .
       dockerfile: Dockerfile.dev
@@ -15,15 +15,15 @@ services:
         max-file: "10"
     restart: unless-stopped
     ports:
-      - 3000:5000
+      - 5000:3000
     volumes:
       - ./code:/app
     environment:
       # mandatory
       API_KEY: "Stefanini@10"
-      API_NAME: Template dev
+      API_NAME: ENROLL DEV
       API_PORT: 3000
-      DATABASE_URL: "postgresql://postgres:postgres@host.docker.internal:5432/template?schema=public"
+      DATABASE_URL: "postgresql://postgres:postgres@host.docker.internal:5432/digicommerce?schema=enroll"
       # optional
       GRAPHQL_DEBUG: "true"
       GRAPHQL_INTROSPECTION: "true"
