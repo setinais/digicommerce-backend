@@ -1,8 +1,8 @@
 version: "3.9"
 
 services:
-  api-enroll:
-    container_name: api-enroll
+  api-digicommerce:
+    container_name: api-digicommerce
     build:
       context: .
       dockerfile: Dockerfile
@@ -18,7 +18,8 @@ services:
       - 3000:80
     environment:
       # mandatory
-      API_NAME: ENROLL
+      API_KEY: "Digicommerce@10"
+      API_NAME: DIGICOMMERCE
       API_PORT: 80
       DATABASE_URL: "postgresql://postgres:postgres@host.docker.internal:5432/template?schema=public"
       # optional
@@ -28,5 +29,3 @@ services:
       NODE_ENV: "production"
       LOGGER: "debug,error,log,verbose,warn"
       # additional mandatory
-      API_DIGICOMMERCE_HOST: "https://vinni.com.br"
-      API_DIGICOMMERCE_SECRET: "DIGICOMMERCE@10"

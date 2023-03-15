@@ -47,27 +47,8 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     const all: RouteInfo = {
       path: '*',
-      method:
-        RequestMethod.DELETE |
-        RequestMethod.GET |
-        RequestMethod.HEAD |
-        RequestMethod.PATCH |
-        RequestMethod.POST |
-        RequestMethod.PUT,
+      method: RequestMethod.ALL,
     };
     consumer.apply(LoggerMiddleware).forRoutes(all);
-    if (DISABLE_AUTH) {
-      Logger.warn(
-        'You system is running without authentication, use this only for tests',
-        'Authentication',
-      );
-    } else {
-      const root: RouteInfo = { path: '/', method: RequestMethod.GET };
-      const playground: RouteInfo = {
-        path: '/graphql/playground',
-        method: RequestMethod.ALL,
-      };
-      consumer.apply(AuthMiddleware).exclude(root, playground).forRoutes(all);
-    }
   }
 }

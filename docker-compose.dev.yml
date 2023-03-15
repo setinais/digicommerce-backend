@@ -1,8 +1,8 @@
 version: "3.9"
 
 services:
-  api-enroll:
-    container_name: enroll-dev
+  api-digicommerce:
+    container_name: digicommerce-dev
     build:
       context: .
       dockerfile: Dockerfile.dev
@@ -20,8 +20,8 @@ services:
       - ./code:/app
     environment:
       # mandatory
-      API_KEY: "Stefanini@10"
-      API_NAME: ENROLL DEV
+      API_KEY: "Digicommerce@10"
+      API_NAME: DIGICOMMERCE DEV
       API_PORT: 3000
       DATABASE_URL: "postgresql://postgres:postgres@host.docker.internal:5432/digicommerce?schema=enroll"
       # optional
@@ -31,6 +31,4 @@ services:
       LOGGER: "debug,error,log,verbose,warn"
       NODE_ENV: "development"
       # additional mandatory
-      API_DIGICOMMERCE_HOST: "https://vinni.com.br"
-      API_DIGICOMMERCE_SECRET: "DIGICOMMERCE@10"
       JWT_TOKEN_EXPIRE_IN_SEC: 86400 # 24 horas

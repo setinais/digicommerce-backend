@@ -1,4 +1,12 @@
-import { IsIn, IsInt, IsNotEmpty, IsNumber, IsString, Max, Min } from 'class-validator';
+import {
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 
 const NodeEnvs: string[] = ['development', 'production'];
 
@@ -26,8 +34,14 @@ export class EnvironmentMandatory {
   @IsString()
   API_KEY: string;
 
-  @IsNotEmpty({ message: 'postgresql://<user>:<password>@<host>:<port>/<database>?schema=public' })
-  @IsString({ message: 'postgresql://<user>:<password>@<host>:<port>/<database>?schema=public' })
+  @IsNotEmpty({
+    message:
+      'postgresql://<user>:<password>@<host>:<port>/<database>?schema=public',
+  })
+  @IsString({
+    message:
+      'postgresql://<user>:<password>@<host>:<port>/<database>?schema=public',
+  })
   DATABASE_URL: string;
 
   @IsIn(NodeEnvs)

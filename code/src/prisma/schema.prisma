@@ -12,7 +12,7 @@ enum ROLE {
   API
   MANAGER
   STORAGE
-  CLIENT
+  USER
   SELLER
 }
 
@@ -25,7 +25,7 @@ model User {
   email    String  @unique @db.VarChar(80)
   password String  @db.VarChar(80)
   active   Boolean @default(true)
-  role     ROLE    @default(CLIENT)
+  role     ROLE    @default(USER)
   document String? @db.VarChar(14)
 
   corporate_name String? @map("corporate_name")
@@ -54,6 +54,8 @@ model Address {
 
   City City @relation(fields: [cityId], references: [id], onDelete: NoAction)
   User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
 }
 
 model State {
@@ -64,7 +66,7 @@ model State {
   name String
   uf   String @db.VarChar(2)
 
-  City City[]
+  Cities City[]
 
   @@map("states")
 }
@@ -77,8 +79,98 @@ model City {
   name    String
   stateId Int    @map("state_id")
 
-  State   State     @relation(fields: [stateId], references: [id], onDelete: Cascade)
-  Address Address[]
+  State     State     @relation(fields: [stateId], references: [id], onDelete: Cascade)
+  Addresses Address[]
 
   @@map("cities")
+}
+
+model Product {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+
+  description   String
+  name          String
+  picture       String
+  subCategoryId String @map("sub_category_id") @db.Uuid
+  brandId       String @map("brand_id") @db.Uuid
+  measureId     Int    @map("measure_id")
+
+  Measure          Measure           @relation(fields: [measureId], references: [id])
+  SubCategory      SubCategory       @relation(fields: [subCategoryId], references: [id])
+  ProductOnBudgets ProductOnBudget[]
+
+  @@map("products")
+}
+
+model Brand {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+  name      String    @unique
+
+  @@map("brands")
+}
+
+model Category {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+  name      String
+
+  SubCategories SubCategory[]
+
+  @@map("categories")
+}
+
+model SubCategory {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt  DateTime? @default(now()) @map("created_at")
+  updatedAt  DateTime? @default(now()) @updatedAt @map("updated_at")
+  name       String
+  categoryId String    @map("category_id") @db.Uuid
+
+  Category Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  Product  Product[]
+
+  @@map("sub_categories")
+}
+
+model ProductOnBudget {
+  budgetId  Int       @map("budget_id")
+  productId String    @map("product_id") @db.Uuid
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+
+  qntd Float
+
+  Budget  Budget  @relation(fields: [budgetId], references: [id])
+  Product Product @relation(fields: [productId], references: [id])
+
+  @@id([budgetId, productId])
+  @@map("product_on_budgets")
+}
+
+model Budget {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+
+  userId           String            @map("user_id")
+  ProductOnBudgets ProductOnBudget[]
+
+  @@map("budgets")
+}
+
+model Measure {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+
+  name String @unique
+
+  Products Product[]
+
+  @@map("measures")
 }

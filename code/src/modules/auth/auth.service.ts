@@ -23,8 +23,7 @@ export class AuthService {
     const user = await this.userService.findOne(email);
 
     if (!user) return null;
-    if (!this.validadeSecret(user.password, genPassword(password_)))
-      return null;
+    if (!(user.password === genPassword(password_))) return null;
     if (!user.active) return null;
 
     const { password, ...result } = user;
@@ -63,9 +62,5 @@ export class AuthService {
 
   private validateExpired(expiration: Date): boolean {
     return expiration.getTime() >= new Date().getTime();
-  }
-
-  private validadeSecret(secretToken: string, secretKey: string): boolean {
-    return secretToken === secretKey;
   }
 }
