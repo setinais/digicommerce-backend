@@ -1,6 +1,5 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import {
-  Logger,
   MiddlewareConsumer,
   Module,
   NestModule,
@@ -11,18 +10,21 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthMiddleware } from './middlewares/auth/auth.middleware';
 import { LoggerMiddleware } from './middlewares/logger/logger.middleware';
+import { AuthModule } from './modules/auth/auth.module';
 import { EnvironmentModule } from './modules/environment/environment.module';
 import { UsersModule } from './modules/users/users.module';
-import { AuthModule } from './modules/auth/auth.module';
+import { AddressModule } from './modules/address/address.module';
+import { StateModule } from './modules/state/state.module';
+import { CityModule } from './modules/city/city.module';
+import { BudgetModule } from './modules/budget/budget.module';
+import { MeasureModule } from './modules/measure/measure.module';
+import { CategoryModule } from './modules/category/category.module';
+import { BrandModule } from './modules/brand/brand.module';
+import { ProductModule } from './modules/product/product.module';
 
-const {
-  GRAPHQL_DEBUG,
-  GRAPHQL_INTROSPECTION,
-  GRAPHQL_PLAYGROUND,
-  DISABLE_AUTH,
-} = EnvironmentModule.env;
+const { GRAPHQL_DEBUG, GRAPHQL_INTROSPECTION, GRAPHQL_PLAYGROUND } =
+  EnvironmentModule.env;
 
 @Module({
   imports: [
@@ -39,6 +41,14 @@ const {
     }),
     UsersModule,
     AuthModule,
+    AddressModule,
+    StateModule,
+    CityModule,
+    BudgetModule,
+    MeasureModule,
+    CategoryModule,
+    BrandModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],

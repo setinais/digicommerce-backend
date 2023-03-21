@@ -9,17 +9,15 @@ datasource db {
 
 enum ROLE {
   ADMIN
-  API
   MANAGER
-  STORAGE
+  ORDER
   USER
-  SELLER
 }
 
 model User {
-  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   name     String  @db.VarChar(80)
   email    String  @unique @db.VarChar(80)
@@ -28,21 +26,22 @@ model User {
   role     ROLE    @default(USER)
   document String? @db.VarChar(14)
 
-  corporate_name String? @map("corporate_name")
-  fatansyName    String? @map("fatansy_name")
+  corporateName String? @map("corporate_name")
+  fatansyName   String? @map("fatansy_name")
 
   confirmEmail  String? @map("confirm_email")
   resetPassword String? @map("reset_password")
 
   Address Address?
+  Budget  Budget[]
 
   @@map("users")
 }
 
 model Address {
-  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   cep          String
   number       Int
@@ -59,9 +58,9 @@ model Address {
 }
 
 model State {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   name String
   uf   String @db.VarChar(2)
@@ -72,9 +71,9 @@ model State {
 }
 
 model City {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   name    String
   stateId Int    @map("state_id")
@@ -86,9 +85,9 @@ model City {
 }
 
 model Product {
-  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   description   String
   name          String
@@ -100,23 +99,26 @@ model Product {
   Measure          Measure           @relation(fields: [measureId], references: [id])
   SubCategory      SubCategory       @relation(fields: [subCategoryId], references: [id])
   ProductOnBudgets ProductOnBudget[]
+  Brand            Brand             @relation(fields: [brandId], references: [id], onDelete: NoAction)
 
   @@map("products")
 }
 
 model Brand {
-  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
-  name      String    @unique
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  name      String   @unique
+
+  Product Product[]
 
   @@map("brands")
 }
 
 model Category {
-  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
   name      String
 
   SubCategories SubCategory[]
@@ -125,11 +127,11 @@ model Category {
 }
 
 model SubCategory {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  createdAt  DateTime? @default(now()) @map("created_at")
-  updatedAt  DateTime? @default(now()) @updatedAt @map("updated_at")
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
   name       String
-  categoryId String    @map("category_id") @db.Uuid
+  categoryId String   @map("category_id") @db.Uuid
 
   Category Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   Product  Product[]
@@ -138,12 +140,13 @@ model SubCategory {
 }
 
 model ProductOnBudget {
-  budgetId  Int       @map("budget_id")
-  productId String    @map("product_id") @db.Uuid
-  createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+  budgetId  Int      @map("budget_id")
+  productId String   @map("product_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  qntd Float
+  pricer Float @default(0)
+  qntd   Float
 
   Budget  Budget  @relation(fields: [budgetId], references: [id])
   Product Product @relation(fields: [productId], references: [id])
@@ -153,22 +156,27 @@ model ProductOnBudget {
 }
 
 model Budget {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+  userId      String   @map("user_id") @db.Uuid
+  observation String?
+  discount    Float    @default(0)
+  validate    DateTime
+  grossValue  Float    @default(0) @map("gross_value")
+  netValue    Float    @default(0) @map("net_value")
 
-  userId           String            @map("user_id")
+  User             User              @relation(fields: [userId], references: [id], onDelete: NoAction)
   ProductOnBudgets ProductOnBudget[]
 
   @@map("budgets")
 }
 
 model Measure {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
-
-  name String @unique
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  name      String   @unique
 
   Products Product[]
 

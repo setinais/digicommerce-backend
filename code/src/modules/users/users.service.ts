@@ -1,7 +1,6 @@
-import { Injectable, Module } from '@nestjs/common';
-import { PrismaService } from '../../services/prisma/prisma.service';
-import { UpdateUserInput } from './dto/update-user.input';
+import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { PrismaService } from '../../services/prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
@@ -29,33 +28,21 @@ export class UsersService {
 
   /// This action returns a user
   async findOne(id: string) {
-    return await this.prisma.user.findFirst({
-      where: {
-        id,
-      },
-    });
+    return await this.prisma.user.findFirst({ where: { id } });
   }
 
   /// This action updates a user
-  async update(updateUserInput: UpdateUserInput) {
+  async update(updateUserInput: Prisma.UserUpdateInput) {
     return await this.prisma.user.update({
-      data: {
-        email: updateUserInput.email,
-        password: updateUserInput.password,
-        name: updateUserInput.name,
-      },
+      data: updateUserInput,
       where: {
-        id: updateUserInput.id,
+        id: updateUserInput.id as string,
       },
     });
   }
 
   /// This action removes a user
   async remove(id: string) {
-    return await this.prisma.user.delete({
-      where: {
-        id: id,
-      },
-    });
+    return await this.prisma.user.delete({ where: { id: id } });
   }
 }

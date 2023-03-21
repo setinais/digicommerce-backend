@@ -7,7 +7,7 @@ import { EnvironmentModule } from './modules/environment/environment.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const { API_NAME, API_PORT, LOGGER, SWAGGER_ENABLED } = EnvironmentModule.env;
+  const { API_NAME, API_PORT, LOGGER } = EnvironmentModule.env;
   const app = await NestFactory.create(AppModule, {
     logger: LOGGER as LogLevel[],
     cors: true,

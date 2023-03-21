@@ -1,11 +1,11 @@
-FROM node:lts as build
+FROM node:lts-alpine as build
 WORKDIR /home/node/app
 COPY --chown=node:node ./code/package.json ./code/yarn.lock* ./
 RUN export NODE_ENV=development; yarn install
 COPY --chown=node:node ./code .
 RUN export NODE_ENV=production; yarn prisma generate && yarn nest build
 
-FROM node:lts
+FROM node:lts-alpine
 WORKDIR /home/node/app
 COPY --chown=node:node --from=build /home/node/app/package.json /home/node/app/yarn.lock ./
 COPY --chown=node:node --from=build /home/node/app/src/prisma ./src/prisma

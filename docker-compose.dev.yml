@@ -8,11 +8,6 @@ services:
       dockerfile: Dockerfile.dev
     extra_hosts:
       - host.docker.internal:host-gateway
-    logging:
-      driver: local
-      options:
-        max-size: "10m"
-        max-file: "10"
     restart: unless-stopped
     ports:
       - 5000:3000
@@ -21,9 +16,9 @@ services:
     environment:
       # mandatory
       API_KEY: "Digicommerce@10"
-      API_NAME: DIGICOMMERCE DEV
+      API_NAME: DIGI-COMMERCE DEV
       API_PORT: 3000
-      DATABASE_URL: "postgresql://postgres:postgres@host.docker.internal:5432/digicommerce?schema=enroll"
+      DATABASE_URL: "postgresql://postgres:postgres@host.docker.internal:5432/digicommerce?schema=public"
       # optional
       GRAPHQL_DEBUG: "true"
       GRAPHQL_INTROSPECTION: "true"

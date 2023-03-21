@@ -1,5 +1,4 @@
-FROM node:lts
+FROM node:lts-alpine
 WORKDIR /app
 RUN yarn global add @nestjs/cli prisma && yarn cache clean --force
-ENTRYPOINT [ "yarn" ]
-CMD [ "start:dev" ]
+CMD [ "yarn", "start:dev" ]
