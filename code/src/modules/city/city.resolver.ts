@@ -1,35 +1,52 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Args, Query, Resolver } from '@nestjs/graphql';
+import { ExceptionsHandler } from 'src/core/exceptions/exceptions-handler';
 import { CityService } from './city.service';
+import { FindAllCityOutput } from './dto/find-all-city.output';
+import { FindOneCityInput } from './dto/find-one-city.input';
 import { City } from './entities/city.entity';
-import { CreateCityInput } from './dto/create-city.input';
-import { UpdateCityInput } from './dto/update-city.input';
+import { FindAllCityInput } from './dto/find-all-city.input';
+import { State } from './entities/state.entity';
 
 @Resolver(() => City)
-export class CityResolver {
-  constructor(private readonly cityService: CityService) {}
-
-  @Mutation(() => City)
-  createCity(@Args('createCityInput') createCityInput: CreateCityInput) {
-    return this.cityService.create(createCityInput);
+export class CityResolver extends ExceptionsHandler {
+  constructor(private readonly cityService: CityService) {
+    super();
   }
 
-  @Query(() => [City], { name: 'city' })
-  findAll() {
-    return this.cityService.findAll();
+  @Query(() => [City], { name: 'cities' })
+  async findAll(
+    @Args('findAllCityInput') findAllCityInput: FindAllCityInput,
+  ): Promise<FindAllCityOutput | undefined> {
+    try {
+      const result = {
+        ...(await this.cityService.findAll(findAllCityInput)),
+        take: findAllCityInput.take,
+        skip: findAllCityInput.skip,
+        cursor: findAllCityInput.id,
+      };
+      return result;
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   @Query(() => City, { name: 'city' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.cityService.findOne(id);
+  async asyncfindOne(
+    @Args('FindOneCityInput') findOneCityInput: FindOneCityInput,
+  ): Promise<City | null | undefined> {
+    try {
+      return await this.cityService.findOne(findOneCityInput);
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
-  @Mutation(() => City)
-  updateCity(@Args('updateCityInput') updateCityInput: UpdateCityInput) {
-    return this.cityService.update(updateCityInput.id, updateCityInput);
-  }
-
-  @Mutation(() => City)
-  removeCity(@Args('id', { type: () => Int }) id: number) {
-    return this.cityService.remove(id);
+  @Query(() => [State], { name: 'states' })
+  async findAllState(): Promise<State[] | null | undefined> {
+    try {
+      return await this.cityService.findAllState();
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 }
