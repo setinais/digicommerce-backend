@@ -6,4 +6,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 export class FindAllBrandOutput {
   @Field(() => Int!) total: number;
   @Field(() => [Brand]!) items: Brand[];
+  @Field(() => Int, { nullable: true }) take?: number;
+  @Field(() => Int, { nullable: true }) skip?: number;
+  @Field(() => String, { nullable: true }) cursor?: string;
 }

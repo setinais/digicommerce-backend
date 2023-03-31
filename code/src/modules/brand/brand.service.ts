@@ -1,32 +1,71 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBrandInput } from './dto/create-brand.input';
-import { UpdateBrandInput } from './dto/update-brand.input';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/services/prisma/prisma.service';
-import { Brand } from './entities/brand.entity';
+import { FindAllBrandInput } from './dto/find-all-brand.input';
+import { FindOneBrandInput } from './dto/find-one-brand.input';
+import { UpdateBrandInput } from './dto/update-brand.input';
 
 @Injectable()
 export class BrandService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(createBrandInput: CreateBrandInput) {
-    return 'This action adds a new brand';
-  }
-
-  async findAll() {
-    return await this.prisma.brand.findMany({
-      where: {},
+  async create(createBrandInput: Prisma.BrandCreateInput) {
+    return await this.prisma.brand.create({
+      data: createBrandInput,
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} brand`;
+  async findAll(findAllBrandInput: FindAllBrandInput) {
+    const conditions = {
+      where: {
+        createdAt: findAllBrandInput.createdAt,
+        updatedAt: findAllBrandInput.updatedAt,
+        name: findAllBrandInput.name,
+      },
+    };
+    const [total, items] = (await this.prisma.$transaction([
+      this.prisma.brand.count({
+        ...conditions,
+      }),
+      this.prisma.brand.findMany({
+        ...conditions,
+        take:
+          findAllBrandInput &&
+          findAllBrandInput.take &&
+          findAllBrandInput.take > 0 &&
+          findAllBrandInput.take < 100
+            ? findAllBrandInput.take
+            : 5,
+        skip:
+          findAllBrandInput &&
+          findAllBrandInput.skip &&
+          findAllBrandInput.skip > 0 &&
+          findAllBrandInput.skip > 0
+            ? findAllBrandInput.skip
+            : 0,
+        ...(findAllBrandInput?.id && { cursor: { id: findAllBrandInput?.id } }),
+        orderBy: { createdAt: 'desc' },
+      }),
+    ])) ?? [0, []];
+    return { total, items };
   }
 
-  update(id: number, updateBrandInput: UpdateBrandInput) {
-    return `This action updates a #${id} brand`;
+  async findOne(findOneBrandInput: FindOneBrandInput) {
+    return await this.prisma.brand.findFirst({
+      where: { id: findOneBrandInput.id, name: findOneBrandInput.name },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} brand`;
+  async update(updateBrandInput: UpdateBrandInput) {
+    return await this.prisma.brand.update({
+      where: { id: updateBrandInput.id },
+      data: updateBrandInput,
+    });
+  }
+
+  async remove(id: string) {
+    return await this.prisma.brand.delete({
+      where: { id },
+    });
   }
 }

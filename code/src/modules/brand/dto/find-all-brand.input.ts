@@ -1,6 +1,12 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
 import { Type } from 'class-transformer';
-import { IsDate, IsNumber, IsOptional, IsUUID } from 'class-validator';
+import {
+  IsDate,
+  IsNumber,
+  IsOptional,
+  IsUUID,
+  IsString,
+} from 'class-validator';
 
 @InputType()
 export class FindAllBrandInput {
@@ -29,4 +35,10 @@ export class FindAllBrandInput {
   @Type(() => Date)
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
+
+  @IsOptional()
+  @IsString()
+  @Type(() => String)
+  @Field(() => String, { nullable: true })
+  name?: string;
 }
