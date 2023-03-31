@@ -1,26 +1,73 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCategoryInput } from './dto/create-category.input';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/services/prisma/prisma.service';
+import { FindAllCategoryInput } from './dto/find-all-category.input';
+import { FindOneCategoryInput } from './dto/find-one-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
 
 @Injectable()
 export class CategoryService {
-  create(createCategoryInput: CreateCategoryInput) {
-    return 'This action adds a new category';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createCategoryInput: Prisma.CategoryCreateInput) {
+    return await this.prisma.category.create({
+      data: createCategoryInput,
+    });
   }
 
-  findAll() {
-    return `This action returns all category`;
+  async findAll(findAllCategoryInput: FindAllCategoryInput) {
+    const conditions = {
+      where: {
+        createdAt: findAllCategoryInput.createdAt,
+        updatedAt: findAllCategoryInput.updatedAt,
+        name: findAllCategoryInput.name,
+      },
+    };
+    const [total, items] = (await this.prisma.$transaction([
+      this.prisma.category.count({
+        ...conditions,
+      }),
+      this.prisma.category.findMany({
+        ...conditions,
+        take:
+          findAllCategoryInput &&
+          findAllCategoryInput.take &&
+          findAllCategoryInput.take > 0 &&
+          findAllCategoryInput.take < 100
+            ? findAllCategoryInput.take
+            : 5,
+        skip:
+          findAllCategoryInput &&
+          findAllCategoryInput.skip &&
+          findAllCategoryInput.skip > 0 &&
+          findAllCategoryInput.skip > 0
+            ? findAllCategoryInput.skip
+            : 0,
+        ...(findAllCategoryInput?.id && {
+          cursor: { id: findAllCategoryInput?.id },
+        }),
+        orderBy: { createdAt: 'desc' },
+      }),
+    ])) ?? [0, []];
+    return { total, items };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findOne(findOneCategoryInput: FindOneCategoryInput) {
+    return await this.prisma.category.findFirst({
+      where: { id: findOneCategoryInput.id, name: findOneCategoryInput.name },
+    });
   }
 
-  update(id: number, updateCategoryInput: UpdateCategoryInput) {
-    return `This action updates a #${id} category`;
+  async update(updateCategoryInput: UpdateCategoryInput) {
+    return await this.prisma.category.update({
+      where: { id: updateCategoryInput.id },
+      data: updateCategoryInput,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: string) {
+    return await this.prisma.category.delete({
+      where: { id },
+    });
   }
 }
