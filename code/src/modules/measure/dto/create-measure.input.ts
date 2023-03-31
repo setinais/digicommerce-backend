@@ -1,7 +1,11 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
+import { Prisma } from '@prisma/client';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 @InputType()
-export class CreateMeasureInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+export class CreateMeasureInput implements Prisma.MeasureCreateInput {
+  @IsNotEmpty()
+  @IsString()
+  @Field(() => String)
+  name: string;
 }

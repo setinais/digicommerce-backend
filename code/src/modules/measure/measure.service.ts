@@ -1,26 +1,73 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMeasureInput } from './dto/create-measure.input';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/services/prisma/prisma.service';
+import { FindAllMeasureInput } from './dto/find-all-measure.input';
+import { FindOneMeasureInput } from './dto/find-one-measure.input';
 import { UpdateMeasureInput } from './dto/update-measure.input';
 
 @Injectable()
 export class MeasureService {
-  create(createMeasureInput: CreateMeasureInput) {
-    return 'This action adds a new measure';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createMeasureInput: Prisma.MeasureCreateInput) {
+    return await this.prisma.measure.create({
+      data: createMeasureInput,
+    });
   }
 
-  findAll() {
-    return `This action returns all measure`;
+  async findAll(findAllMeasureInput: FindAllMeasureInput) {
+    const conditions = {
+      where: {
+        createdAt: findAllMeasureInput.createdAt,
+        updatedAt: findAllMeasureInput.updatedAt,
+        name: findAllMeasureInput.name,
+      },
+    };
+    const [total, items] = (await this.prisma.$transaction([
+      this.prisma.measure.count({
+        ...conditions,
+      }),
+      this.prisma.measure.findMany({
+        ...conditions,
+        take:
+          findAllMeasureInput &&
+          findAllMeasureInput.take &&
+          findAllMeasureInput.take > 0 &&
+          findAllMeasureInput.take < 100
+            ? findAllMeasureInput.take
+            : 5,
+        skip:
+          findAllMeasureInput &&
+          findAllMeasureInput.skip &&
+          findAllMeasureInput.skip > 0 &&
+          findAllMeasureInput.skip > 0
+            ? findAllMeasureInput.skip
+            : 0,
+        ...(findAllMeasureInput?.id && {
+          cursor: { id: findAllMeasureInput?.id },
+        }),
+        orderBy: { createdAt: 'desc' },
+      }),
+    ])) ?? [0, []];
+    return { total, items };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} measure`;
+  async findOne(findOneMeasureInput: FindOneMeasureInput) {
+    return await this.prisma.measure.findFirst({
+      where: { id: findOneMeasureInput.id, name: findOneMeasureInput.name },
+    });
   }
 
-  update(id: number, updateMeasureInput: UpdateMeasureInput) {
-    return `This action updates a #${id} measure`;
+  async update(updateMeasureInput: UpdateMeasureInput) {
+    return await this.prisma.measure.update({
+      where: { id: updateMeasureInput.id },
+      data: updateMeasureInput,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} measure`;
+  async remove(id: number) {
+    return await this.prisma.measure.delete({
+      where: { id },
+    });
   }
 }
