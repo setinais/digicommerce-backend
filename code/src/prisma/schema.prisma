@@ -45,11 +45,11 @@ model Address {
 
   cep          String
   number       Int
-  complement   String
+  complement   String?
   address      String
   neighborhood String
-  cityId       Int    @map("city_id")
-  userId       String @unique @map("user_id") @db.Uuid
+  cityId       Int     @map("city_id")
+  userId       String  @unique @map("user_id") @db.Uuid
 
   City City @relation(fields: [cityId], references: [id], onDelete: NoAction)
   User User @relation(fields: [userId], references: [id], onDelete: Cascade)

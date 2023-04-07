@@ -1,8 +1,12 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { ROLE } from '@prisma/client';
+import { CurrentToken } from 'src/core/decorators/CurrentTokenGql.decorator';
 import { AddressService } from './address.service';
-import { Address } from './entities/address.entity';
 import { CreateAddressInput } from './dto/create-address.input';
+import { FindAllAddressInput } from './dto/find-all-address.input';
+import { FindOneAddressInput } from './dto/find-one-address.input';
 import { UpdateAddressInput } from './dto/update-address.input';
+import { Address } from './entities/address.entity';
 
 @Resolver(() => Address)
 export class AddressResolver {
@@ -16,27 +20,36 @@ export class AddressResolver {
   }
 
   @Query(() => [Address], { name: 'addresses' })
-  findAll() {
-    return this.addressService.findAll();
+  findAll(
+    @Args('findAllAddressInput', { nullable: true })
+    findAllAddressInput: FindAllAddressInput,
+    @CurrentToken() user: any,
+  ) {
+    return this.addressService.findAll(findAllAddressInput, user);
   }
 
   @Query(() => Address, { name: 'address' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.addressService.findOne(id);
+  findOne(
+    @Args('findOneAddressInput') findOneAddressInput: FindOneAddressInput,
+  ) {
+    return this.addressService.findOne(findOneAddressInput.id);
   }
 
   @Mutation(() => Address)
   updateAddress(
     @Args('updateAddressInput') updateAddressInput: UpdateAddressInput,
+    @CurrentToken() user: any,
   ) {
-    return this.addressService.update(
-      updateAddressInput.id,
-      updateAddressInput,
-    );
+    const id = ROLE.ADMIN === user.role ? updateAddressInput.id : user.id;
+    return this.addressService.update({ ...updateAddressInput, id: id });
   }
 
   @Mutation(() => Address)
-  removeAddress(@Args('id', { type: () => Int }) id: number) {
+  removeAddress(
+    @Args('deleteAddressInput') findOneAddressInput: FindOneAddressInput,
+    @CurrentToken() user: any,
+  ) {
+    const id = ROLE.ADMIN === user.role ? findOneAddressInput.id : user.id;
     return this.addressService.remove(id);
   }
 }
