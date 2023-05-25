@@ -21,6 +21,7 @@ async function bootstrap() {
     preflightContinue: false,
     optionsSuccessStatus: 204,
   });
+  await app.listen(API_PORT);
   console.log(`${textSync(API_NAME, 'Standard')}`);
   Logger.verbose(`Running in port: ${API_PORT}  🚀`, 'Bootstrap');
 }
