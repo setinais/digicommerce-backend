@@ -4,8 +4,8 @@ CREATE TYPE "ROLE" AS ENUM ('ADMIN', 'MANAGER', 'ORDER', 'USER');
 -- CreateTable
 CREATE TABLE "users" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "name" VARCHAR(80) NOT NULL,
     "email" VARCHAR(80) NOT NULL,
     "password" VARCHAR(80) NOT NULL,
@@ -23,11 +23,11 @@ CREATE TABLE "users" (
 -- CreateTable
 CREATE TABLE "addresses" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "cep" TEXT NOT NULL,
     "number" INTEGER NOT NULL,
-    "complement" TEXT NOT NULL,
+    "complement" TEXT,
     "address" TEXT NOT NULL,
     "neighborhood" TEXT NOT NULL,
     "city_id" INTEGER NOT NULL,
@@ -39,8 +39,8 @@ CREATE TABLE "addresses" (
 -- CreateTable
 CREATE TABLE "states" (
     "id" SERIAL NOT NULL,
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "name" TEXT NOT NULL,
     "uf" VARCHAR(2) NOT NULL,
 
@@ -50,8 +50,8 @@ CREATE TABLE "states" (
 -- CreateTable
 CREATE TABLE "cities" (
     "id" SERIAL NOT NULL,
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "name" TEXT NOT NULL,
     "state_id" INTEGER NOT NULL,
 
@@ -61,8 +61,8 @@ CREATE TABLE "cities" (
 -- CreateTable
 CREATE TABLE "products" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "description" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "picture" TEXT NOT NULL,
@@ -76,8 +76,8 @@ CREATE TABLE "products" (
 -- CreateTable
 CREATE TABLE "brands" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "name" TEXT NOT NULL,
 
     CONSTRAINT "brands_pkey" PRIMARY KEY ("id")
@@ -86,8 +86,8 @@ CREATE TABLE "brands" (
 -- CreateTable
 CREATE TABLE "categories" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "name" TEXT NOT NULL,
 
     CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
@@ -96,8 +96,8 @@ CREATE TABLE "categories" (
 -- CreateTable
 CREATE TABLE "sub_categories" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "name" TEXT NOT NULL,
     "category_id" UUID NOT NULL,
 
@@ -108,8 +108,9 @@ CREATE TABLE "sub_categories" (
 CREATE TABLE "product_on_budgets" (
     "budget_id" INTEGER NOT NULL,
     "product_id" UUID NOT NULL,
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "pricer" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "qntd" DOUBLE PRECISION NOT NULL,
 
     CONSTRAINT "product_on_budgets_pkey" PRIMARY KEY ("budget_id","product_id")
@@ -118,9 +119,14 @@ CREATE TABLE "product_on_budgets" (
 -- CreateTable
 CREATE TABLE "budgets" (
     "id" SERIAL NOT NULL,
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" UUID NOT NULL,
+    "observation" TEXT,
+    "discount" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "validate" TIMESTAMP(3) NOT NULL,
+    "gross_value" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "net_value" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
     CONSTRAINT "budgets_pkey" PRIMARY KEY ("id")
 );
@@ -128,8 +134,8 @@ CREATE TABLE "budgets" (
 -- CreateTable
 CREATE TABLE "measures" (
     "id" SERIAL NOT NULL,
-    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "name" TEXT NOT NULL,
 
     CONSTRAINT "measures_pkey" PRIMARY KEY ("id")

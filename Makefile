@@ -7,7 +7,7 @@ dev:;    ${COMPOSE_COMMAND} --file docker-compose.dev.yml up --build
 logs:;   ${COMPOSE_COMMAND} $(@) --follow --tail="all"
 prod:;   ${COMPOSE_COMMAND} up
 rm:;     ${COMPOSE_COMMAND} down
-rmi:;    ${COMPOSE_COMMAND} down --rmi local
+rmi:;    ${COMPOSE_COMMAND} down --rmi local --remove-orphans
 rmiv:;   ${COMPOSE_COMMAND} down --rmi local --volumes
 start:;  ${COMPOSE_COMMAND} $(@)
 stop:;   ${COMPOSE_COMMAND} $(@)

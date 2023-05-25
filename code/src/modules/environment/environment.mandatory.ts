@@ -11,8 +11,8 @@ import {
 const NodeEnvs: string[] = ['development', 'production'];
 
 export const environmentMandatory = {
-  API_NAME: process.env.API_NAME as string,
-  API_PORT: Number(process.env.API_PORT),
+  API_NAME: String(process.env.API_NAME || 'DIGI-COMMERCE'),
+  API_PORT: Number(process.env.API_PORT || 5000),
   API_KEY: process.env.API_KEY as string,
   DATABASE_URL: process.env.DATABASE_URL?.trim(),
   NODE_ENV: process.env.NODE_ENV,

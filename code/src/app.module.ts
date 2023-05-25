@@ -15,7 +15,6 @@ import { AuthModule } from './modules/auth/auth.module';
 import { EnvironmentModule } from './modules/environment/environment.module';
 import { UsersModule } from './modules/users/users.module';
 import { AddressModule } from './modules/address/address.module';
-import { StateModule } from './modules/state/state.module';
 import { CityModule } from './modules/city/city.module';
 import { BudgetModule } from './modules/budget/budget.module';
 import { MeasureModule } from './modules/measure/measure.module';
@@ -42,7 +41,6 @@ const { GRAPHQL_DEBUG, GRAPHQL_INTROSPECTION, GRAPHQL_PLAYGROUND } =
     UsersModule,
     AuthModule,
     AddressModule,
-    StateModule,
     CityModule,
     BudgetModule,
     MeasureModule,

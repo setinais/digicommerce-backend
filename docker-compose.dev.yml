@@ -1,8 +1,8 @@
 version: "3.9"
 
 services:
-  api-digicommerce:
-    container_name: digicommerce-dev
+  api:
+    container_name: backend-dev
     build:
       context: .
       dockerfile: Dockerfile.dev
@@ -10,20 +10,14 @@ services:
       - host.docker.internal:host-gateway
     restart: unless-stopped
     ports:
-      - 5000:3000
+      - 4000:5000
     volumes:
       - ./code:/app
     environment:
-      # mandatory
-      API_KEY: "Digicommerce@10"
+      API_KEY: "DIGICOMMERCE@10"
       API_NAME: DIGI-COMMERCE DEV
-      API_PORT: 3000
       DATABASE_URL: "postgresql://postgres:postgres@host.docker.internal:5432/digicommerce?schema=public"
-      # optional
       GRAPHQL_DEBUG: "true"
       GRAPHQL_INTROSPECTION: "true"
       GRAPHQL_PLAYGROUND: "true"
-      LOGGER: "debug,error,log,verbose,warn"
       NODE_ENV: "development"
-      # additional mandatory
-      JWT_TOKEN_EXPIRE_IN_SEC: 86400 # 24 horas

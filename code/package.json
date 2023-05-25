@@ -1,9 +1,9 @@
 {
-  "name": "enroll",
-  "version": "0.0.1",
+  "name": "digicommerce",
+  "version": "1.0.0",
   "description": "",
   "author": "Vinnicyus Carvalho <vcgoncalves@stefanini.com>",
-  "private": false,
+  "private": true,
   "license": "DIGI-COMMERCE",
   "scripts": {
     "build": "nest build",
@@ -46,7 +46,6 @@
     "bcrypt": "^5.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
-    "dotenv": "^16.0.3",
     "figlet": "^1.5.2",
     "graphql": "^16.6.0",
     "graphql-redis-subscriptions": "^2.5.0",
@@ -58,8 +57,7 @@
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.5.6"
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

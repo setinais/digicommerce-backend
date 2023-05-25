@@ -4,7 +4,6 @@ import { IsBooleanString, IsIn, IsNumber, IsOptional } from 'class-validator';
 const LogLevels: LogLevel[] = ['debug', 'error', 'log', 'verbose', 'warn'];
 
 export const environmentOptional = {
-  DISABLE_AUTH: process.env.DISABLE_AUTH === 'true',
   GRAPHQL_DEBUG: process.env.GRAPHQL_DEBUG === 'true',
   GRAPHQL_INTROSPECTION: process.env.GRAPHQL_INTROSPECTION === 'true',
   GRAPHQL_PLAYGROUND: process.env.GRAPHQL_PLAYGROUND === 'true',
@@ -14,9 +13,6 @@ export const environmentOptional = {
 };
 
 export class EnvironmentOptional {
-  @IsBooleanString()
-  DISABLE_AUTH: string;
-
   @IsBooleanString()
   GRAPHQL_DEBUG: string;
 

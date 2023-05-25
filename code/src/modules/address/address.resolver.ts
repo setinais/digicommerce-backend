@@ -7,6 +7,7 @@ import { FindAllAddressInput } from './dto/find-all-address.input';
 import { FindOneAddressInput } from './dto/find-one-address.input';
 import { UpdateAddressInput } from './dto/update-address.input';
 import { Address } from './entities/address.entity';
+import { FindAllAddressOutput } from './dto/find-all-address.output';
 
 @Resolver(() => Address)
 export class AddressResolver {
@@ -19,13 +20,13 @@ export class AddressResolver {
     return this.addressService.create(createAddressInput);
   }
 
-  @Query(() => [Address], { name: 'addresses' })
+  @Query(() => FindAllAddressOutput, { name: 'addresses' })
   findAll(
     @Args('findAllAddressInput', { nullable: true })
     findAllAddressInput: FindAllAddressInput,
     @CurrentToken() user: any,
   ) {
-    return this.addressService.findAll(findAllAddressInput, user);
+    return this.addressService.findAll(findAllAddressInput);
   }
 
   @Query(() => Address, { name: 'address' })
