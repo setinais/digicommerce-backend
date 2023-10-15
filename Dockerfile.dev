@@ -1,4 +1,4 @@
 FROM node:lts-alpine
 WORKDIR /app
-RUN yarn global add @nestjs/cli prisma && yarn cache clean --force
+RUN yarn global add @nestjs/cli prisma && yarn cache clean --force && mkdir ./static
 CMD [ "yarn", "start:dev" ]
