@@ -31,6 +31,10 @@ export class UsersService {
     return await this.prisma.user.findFirst({ where: { id } });
   }
 
+  async findByEmail(email: string) {
+    return await this.prisma.user.findFirst({ where: { email } });
+  }
+
   /// This action updates a user
   async update(updateUserInput: Prisma.UserUpdateInput) {
     return await this.prisma.user.update({

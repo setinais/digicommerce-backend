@@ -46,6 +46,7 @@ export class CategoryService {
         ...(findAllCategoryInput?.id && {
           cursor: { id: findAllCategoryInput?.id },
         }),
+        include: { SubCategories: true },
         orderBy: { createdAt: 'desc' },
       }),
     ])) ?? [0, []];

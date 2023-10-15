@@ -65,7 +65,7 @@ CREATE TABLE "products" (
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "description" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "picture" TEXT NOT NULL,
+    "picture" TEXT,
     "sub_category_id" UUID NOT NULL,
     "brand_id" UUID NOT NULL,
     "measure_id" INTEGER NOT NULL,

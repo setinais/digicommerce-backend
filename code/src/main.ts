@@ -14,7 +14,7 @@ async function bootstrap() {
   await prismaService.enableShutdownHooks(app);
   app.useGlobalPipes(new ValidationPipe());
   app.enableShutdownHooks();
-  const allowList = ['http://localhost'];
+  const allowList = ['http://localhost', 'https://studio.apollographql.com'];
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
