@@ -91,10 +91,10 @@ model Product {
 
   description   String
   name          String
-  picture       String?
-  subCategoryId String  @map("sub_category_id") @db.Uuid
-  brandId       String  @map("brand_id") @db.Uuid
-  measureId     Int     @map("measure_id")
+  picture       String
+  subCategoryId String @map("sub_category_id") @db.Uuid
+  brandId       String @map("brand_id") @db.Uuid
+  measureId     Int    @map("measure_id")
 
   Measure          Measure           @relation(fields: [measureId], references: [id])
   SubCategory      SubCategory       @relation(fields: [subCategoryId], references: [id])

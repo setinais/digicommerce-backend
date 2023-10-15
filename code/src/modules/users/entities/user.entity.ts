@@ -10,7 +10,7 @@ export class User {
   @Field(() => String, { nullable: true }) email: string;
   @Field(() => String, { nullable: true }) password: string;
   @Field(() => ROLE, { nullable: true }) role: ROLE;
-  @Field(() => Boolean, { nullable: true }) active: boolean;
+  @Field(() => Boolean, { nullable: true }) status: boolean;
   @Field(() => Date, { nullable: true }) createdAt: Date;
   @Field(() => Date, { nullable: true }) updatedAt: Date;
 }

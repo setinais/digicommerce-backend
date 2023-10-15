@@ -1,14 +1,14 @@
 import {
   Injectable,
-  NotFoundException,
   UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { compare, genPassword } from 'src/core/utils/bcrypt';
 import { EnvironmentModule } from '../environment/environment.module';
-import { User } from '../users/entities/user.entity';
-import { UsersService } from '../users/users.service';
 import { IPayload } from './dto/IPayload';
+import { UsersService } from '../users/users.service';
+import { User } from '../users/entities/user.entity';
+import { genPassword } from 'src/core/utils/bcrypt';
 
 const { JWT_TOKEN_EXPIRE_IN_SEC } = EnvironmentModule.env;
 
@@ -20,10 +20,10 @@ export class AuthService {
   ) {}
 
   async validateToken(email: string, password_: string): Promise<any> {
-    const user = await this.userService.findByEmail(email);
+    const user = await this.userService.findOne(email);
 
     if (!user) return null;
-    if (!compare(password_, user.password)) return null;
+    if (!(user.password === genPassword(password_))) return null;
     if (!user.active) return null;
 
     const { password, ...result } = user;

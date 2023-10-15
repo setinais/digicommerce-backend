@@ -8,7 +8,6 @@ import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/guards/gql-auth/gql-auth.guard';
 import { RoleGuard } from 'src/guards/role/role.guard';
 import { Public } from 'src/core/decorators/public.decorator';
-import { genPassword } from 'src/core/utils/bcrypt';
 
 @UseGuards(GqlAuthGuard, RoleGuard)
 @Resolver(() => User)
@@ -21,10 +20,7 @@ export class UsersResolver extends ExceptionsHandler {
   @Mutation(() => User)
   async createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
     try {
-      const user = await this.usersService.create({
-        ...createUserInput,
-        password: genPassword(createUserInput.password),
-      });
+      const user = await this.usersService.create(createUserInput);
 
       return user;
     } catch (error) {

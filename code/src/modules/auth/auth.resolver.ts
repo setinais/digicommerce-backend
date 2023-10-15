@@ -8,16 +8,12 @@ import { LoginInput } from './dto/login.input';
 import { LoginOutput } from './dto/login.output';
 import { LocalStrategy } from './local.strategy';
 import { User } from '../users/entities/user.entity';
-import { UsersService } from '../users/users.service';
-import { ApiKeyAuthGuard } from 'src/guards/api-key-auth/api-key-auth.guard';
-import { LoginApiInput } from './dto/login.api.input';
 
 @Resolver()
 export class AuthResolver extends ExceptionsHandler {
   constructor(
     private readonly authService: AuthService,
     private readonly localStrategy: LocalStrategy,
-    private readonly userService: UsersService,
   ) {
     super();
   }
@@ -44,26 +40,6 @@ export class AuthResolver extends ExceptionsHandler {
     try {
       await this.authService.logout(user);
       return true;
-    } catch (error) {
-      this.handleError(error);
-    }
-  }
-
-  @UseGuards(ApiKeyAuthGuard)
-  @Mutation(() => LoginOutput)
-  async loginApis(
-    @Args('loginInput') loginInput: LoginApiInput,
-  ): Promise<LoginOutput | undefined> {
-    try {
-      let user = await this.userService.findByEmail(loginInput.email);
-      if (!user) {
-        user = await this.userService.create({
-          email: loginInput.email,
-          name: loginInput.name,
-          password: Math.random().toString(36).slice(-10),
-        });
-      }
-      return await this.authService.login(user);
     } catch (error) {
       this.handleError(error);
     }

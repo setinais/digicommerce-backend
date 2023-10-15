@@ -10,7 +10,6 @@ import {
   FindOneBrandInput,
 } from './dto/find-one-brand.input';
 import { FindAllBrandOutput } from './dto/find-all-brand.output';
-import { Public } from 'src/core/decorators/public.decorator';
 
 @Resolver(() => Brand)
 export class BrandResolver extends ExceptionsHandler {
@@ -29,8 +28,7 @@ export class BrandResolver extends ExceptionsHandler {
     }
   }
 
-  @Public()
-  @Query(() => FindAllBrandOutput, { name: 'brands' })
+  @Query(() => [Brand], { name: 'brands' })
   async findAll(
     @Args('findAllBrandInput') findAllBrandInput: FindAllBrandInput,
   ): Promise<FindAllBrandOutput | undefined> {

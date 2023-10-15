@@ -10,7 +10,6 @@ import {
   DeleteOneCategoryInput,
 } from './dto/find-one-category.input';
 import { UpdateCategoryInput } from './dto/update-category.input';
-import { Public } from 'src/core/decorators/public.decorator';
 
 @Resolver(() => Category)
 export class CategoryResolver extends ExceptionsHandler {
@@ -29,8 +28,7 @@ export class CategoryResolver extends ExceptionsHandler {
     }
   }
 
-  @Public()
-  @Query(() => FindAllCategoryOutput, { name: 'categories' })
+  @Query(() => [Category], { name: 'categorys' })
   async findAll(
     @Args('findAllCategoryInput') findAllCategoryInput: FindAllCategoryInput,
   ): Promise<FindAllCategoryOutput | undefined> {
